@@ -1,0 +1,156 @@
+available_player_list = []
+available_players = []
+my_team = []
+
+import csv
+
+with open('pff_rankings.csv', 'r') as pff:
+    csv_reader = csv.reader(pff)
+    next(csv_reader)
+    for line in csv_reader:
+        available_players.append(line[1])
+        available_player_list.append((line[1], line[0]))
+
+def print_draft_round(draft_round):
+    print('-----------------------------------------------------------------------')
+    print(f'                               ROUND {draft_round}                                  ')
+    print('-----------------------------------------------------------------------\n')
+
+def quit_draft(entry):
+    if entry == 'quit':
+        sys.exit()
+
+def draft_player(player):
+    available_players.remove(player)
+    for i in available_player_list:
+        if i[0] == player:
+            available_player_list.remove(i)
+
+def selection_error():
+    while True:
+        selection = input('That player was either misspelled or is unavailble. Try again: ')
+        quit_draft(selection)
+        if selection in available_players:
+            draft_player(selection)
+            print(f'[{selection.upper()} has been selected]\n')
+            return False
+        elif selection == 'DEF' or selection == 'K':
+            print('[DST/K has been selected]\n')
+        else:
+            continue
+
+def opponent_pick_selection(overall_pick, counter):
+    player_name = input(f'Pick {overall_pick}: Player {counter} selects: ')
+    quit_draft(player_name)
+    if player_name.casefold() in available_players:
+        draft_player(player_name)
+        print(f'[{player_name.upper()} has been selected]\n')
+    elif player_name == 'DEF' or player_name == 'K':
+        print('[DST/K has been selected]\n')
+    else:
+        selection_error()
+
+def suggest_players():
+    five_runningbacks = []
+    five_wide_recievers = []
+    five_tight_ends = []
+    five_quarterbacks = []
+
+    for player in available_player_list:
+        if player[1] == 'RB':
+            five_runningbacks.append(player[0])
+
+    for player in available_player_list:
+        if player[1] == 'WR':
+            five_wide_recievers.append(player[0])
+
+    for player in available_player_list:
+        if player[1] == 'TE':
+            five_tight_ends.append(player[0])
+
+    for player in available_player_list:
+        if player[1] == 'QB':
+            five_quarterbacks.append(player[0])
+
+    print('\nTop 5 available RBs: \n' + str(five_runningbacks[:5]))
+    print('\nTop 5 available WRs: \n' + str(five_wide_recievers[:5]))
+    print('\nTop 5 available TEs: \n' + str(five_tight_ends[:5]))
+    print('\nTop 5 available QBs: \n' + str(five_quarterbacks[:5]))
+
+
+
+def my_pick_selection():
+    print('-------------------------------------------------------------')
+
+    suggest_players()
+
+    print(f'\n{available_players[0]} is the best available player according to PFF')
+
+    player_name = input("It's your turn! Select your player: ")
+
+    quit_draft(player_name)
+
+    if player_name in available_players:
+        my_team.append(player_name)
+        draft_player(player_name)
+        print(f'[{player_name.upper()} has been added to your team]\n')
+
+    else:
+        while True:
+            selection = input('That player was either misspelled or is unavailble. Try again: ')
+            if selection in available_players:
+                my_team.append(selection)
+                draft_player(selection)
+                print(f'[{selection.upper()} has been added to your team]\n')
+                return False
+            else:
+                continue
+
+    print('-------------------------------------------------------------\n')
+
+##################################
+
+### MAIN CODE LINE BEGINS HERE ###
+
+##################################
+
+draft_position = int(input('Enter your starting draft position: '))
+number_of_teams = int(input('Enter the number of teams in your draft: '))
+print("\nTo quit at any time, enter 'quit'")
+print("If your opponent selects a defense or kicker, enter 'DEF' or 'K'\n")
+
+counter = 0
+overall_pick = 0
+draft_round = 1
+
+print_draft_round(draft_round)
+
+for i in range(15):
+
+    for i in range(number_of_teams):
+        overall_pick += 1
+        counter += 1
+        if counter == draft_position:
+            my_pick_selection()
+        else:
+            opponent_pick_selection(overall_pick, counter)
+
+    counter += 1
+    draft_round +=1
+
+    print_draft_round(draft_round)
+
+    for i in range(number_of_teams):
+        overall_pick += 1
+        counter -= 1
+        if counter == draft_position:
+            my_pick_selection()
+        else:
+            opponent_pick_selection(overall_pick, counter)
+
+    counter -= 1
+    draft_round +=1
+
+    print_draft_round(draft_round)
+
+print('\nDraft Completed!')
