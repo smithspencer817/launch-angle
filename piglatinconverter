@@ -1,0 +1,26 @@
+import sys
+
+def pig_latin(word):
+    '''this function takes in a word and returns it in pig latin'''
+
+    vowel_list = ['a', 'e', 'i', 'o', 'u']
+
+    if word[0] in vowel_list:
+        print('\n' + word + 'way')
+
+    else:
+        print('\n' + word[1:] + word[0] + 'ay')
+
+while True:
+
+    print('----------------------------------------------------------------------------------------')
+
+    word = input("\nEnter a word to have it returned in pig latin.  Enter 'q' at any time to quit: ")
+
+    if word[0] == 'q':
+        print('\nThank you for playing!')
+        break
+
+    pig_latin(word)
+
+sys.exit()
