@@ -1,3 +1,5 @@
+'''this is a pig latin converter'''
+
 import sys
 
 def pig_latin(word):
@@ -13,14 +15,14 @@ def pig_latin(word):
 
 while True:
 
-    print('----------------------------------------------------------------------------------------')
+    print('--------------------------------------------------------')
+    print("Enter 'q' at any time to quit")
+    WORD_ENTRY = input("\nEnter a word to have it returned in pig latin: ")
 
-    word = input("\nEnter a word to have it returned in pig latin.  Enter 'q' at any time to quit: ")
-
-    if word[0] == 'q':
+    if WORD_ENTRY[0] == 'q':
         print('\nThank you for playing!')
         break
 
-    pig_latin(word)
+    pig_latin(WORD_ENTRY)
 
 sys.exit()
